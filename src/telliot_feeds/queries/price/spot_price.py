@@ -32,6 +32,7 @@ SPOT_PRICE_PAIRS = [
     "TUSDC/USD",
     "EUR/USD",
     "PLS/USD",
+    "PLSTEST/USD",
     "TPLS/USD",
     "ETH/JPY",
     "ALBT/USD",
