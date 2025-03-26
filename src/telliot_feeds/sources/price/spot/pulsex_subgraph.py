@@ -8,7 +8,7 @@ from typing import Any
 from decimal import Decimal
 
 import requests
-
+import logging
 from telliot_feeds.dtypes.datapoint import datetime_now_utc
 from telliot_feeds.dtypes.datapoint import OptionalDataPoint
 from telliot_feeds.pricing.price_service import WebPriceService
@@ -16,6 +16,8 @@ from telliot_feeds.pricing.price_source import PriceSource
 from telliot_feeds.utils.log import get_logger
 
 logger = get_logger(__name__)
+logger.setLevel(logging.INFO)
+
 
 pulsex_subgraph_supporten_tokens = {
 #mainnet tokens
@@ -47,7 +49,7 @@ class PulseXSubgraphService(WebPriceService):
     def __init__(self, **kwargs: Any) -> None:  
         kwargs["name"] = "PulseX Subgraph Price Service"
         kwargs["url"] = None
-        kwargs["timeout"] = 10.0
+        kwargs["timeout"] = 15.0
         super().__init__(**kwargs)
 
     async def get_price(self, asset: str, currency: str) -> OptionalDataPoint[float]:
@@ -57,7 +59,7 @@ class PulseXSubgraphService(WebPriceService):
 
         """
         self.url = TESTNET_GRAPH if asset.startswith('t*') else MAINNET_GRAPH
-        logger.info(f'Using {self.url} to fetch values')
+        logger.debug(f'Using {self.url} to fetch values')
         
         asset = asset.lower()
         currency = currency.lower()
