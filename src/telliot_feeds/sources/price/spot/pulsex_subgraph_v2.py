@@ -1,13 +1,9 @@
-import os
-#from dotenv import load_dotenv
-
 from dataclasses import dataclass
 from dataclasses import field
 from typing import Any
 
-from decimal import Decimal
-
 import requests
+import logging
 
 from telliot_feeds.dtypes.datapoint import datetime_now_utc
 from telliot_feeds.dtypes.datapoint import OptionalDataPoint
@@ -16,6 +12,8 @@ from telliot_feeds.pricing.price_source import PriceSource
 from telliot_feeds.utils.log import get_logger
 
 logger = get_logger(__name__)
+logger.setLevel(logging.INFO)
+
 
 pulsex_subgraph_supporten_tokens = {
 #mainnet tokens
@@ -48,7 +46,7 @@ class PulseXSubgraphv2Service(WebPriceService):
     def __init__(self, **kwargs: Any) -> None:  
         kwargs["name"] = "PulseX Subgraph V2 Price Service"
         kwargs["url"] = None
-        kwargs["timeout"] = 10.0
+        kwargs["timeout"] = 15.0
         super().__init__(**kwargs)
 
     async def get_price(self, asset: str, currency: str) -> OptionalDataPoint[float]:
@@ -58,7 +56,7 @@ class PulseXSubgraphv2Service(WebPriceService):
 
         """
         self.url = TESTNET_GRAPH if asset.startswith('t*') else MAINNET_GRAPH
-        logger.info(f'Using {self.url} to fetch values')
+        logger.debug(f'Using {self.url} to fetch values')
         
         asset = asset.lower()
         currency = currency.lower()
@@ -110,7 +108,7 @@ class PulseXSubgraphv2Service(WebPriceService):
             try:
                 if response["data"]["token"] == None:
                     logger.error(f"No data found for the token {token}")
-                    logger.info(f"It is possible that no Liquidity Pool exists including this token ({token})")
+                    logger.error(f"It is possible that no Liquidity Pool exists including this token ({token})")
                     return None, None
 
                 price = float(response["data"]["token"]["derivedUSD"])
