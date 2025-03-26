@@ -95,7 +95,7 @@ class DexScreenerService(WebPriceService):
         else:
             logger.error(f"Exchange {exchange} not supported")
             return None, None
-        logger.info(f'Fetching {asset}/{currency} in {exchange} for pool {pair_id}')
+        logger.debug(f'Fetching {asset}/{currency} in {exchange} for pool {pair_id}')
 
         request_url = MAINNET_API_URL + f"/latest/dex/pairs/{chain_id}/{pair_id}"
 
